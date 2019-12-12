@@ -1,9 +1,18 @@
 <?php
 session_start();
-require_once '../../Entities/Classes.php';
-$db = new Connexion('root','');
-$db->connect();
-$tables = $db->getTables();
+if (isset($_POST['add'])){
+
+
+    $nbrpersonnes = $_POST['nbrpersonnes'];
+    $emplacement = $_POST['emplacement'];
+    require_once '../../Entities/Classes.php';
+    $db = new Connexion('root','');
+    $db->connect();
+    $db->addTable($nbrpersonnes,'disponible',$emplacement);
+    $_SESSION['msg'] = 'Table ajouté avec succes';
+    header('location:index.php');
+    
+}
 
 
 ?>
@@ -16,7 +25,7 @@ $tables = $db->getTables();
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Le zink</title>
+  <title>Ajouter une table</title>
   <style>
     a.btn{
       color:white !important;
@@ -37,39 +46,23 @@ $tables = $db->getTables();
     <div class="main-panel">
         <div class="content-wrapper">
           <div class="row">
-    <div style='padding-top:10' class="col-lg-12 grid-margin stretch-card">
+          <div class="col-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Liste des  Tables</h4>
+                  <h4 class="card-title">Ajouter une table</h4>
                   
-                  <div class="table-responsive">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Nombre des personnes</th>
-                          <th>Etat</th>
-                          <th>Emplacement</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php $i =1; foreach($tables as $table){ ?>
-                          <tr>
-                          <td><?php echo $i; ?></td>
-                          <td><?php echo $table['nb_personnes']; ?> personnes </td>
-                          <td><?php if ($table['etat_tables'] == "disponible" ){echo "<label class='badge badge-primary'>".$table['etat_tables']."</label>";}else{echo "<label class='badge badge-warning'>".$table['etat_tables']."</label>";}  ?></td>
-                          <td><?php echo $table['emplacement_tables']; ?></td>
-                          <td><a href="modify.php?id=<?php echo $table['id_tables'];  ?>" class="btn btn-success">Modifier</a> <a href="delete.php?id=<?php echo $table['id_tables'];  ?>" class="btn btn-danger" onclick='return confirm("voulez-vous vraiment supprimer cette table")'>Supprimer</a></td>
-                        </tr>
-
-
-
-                      <?php $i++;  } ?>
-                        
-                      </tbody>
-                    </table>
-                  </div>
+                  <form class="forms-sample" method='POST' action="add.php">
+                    <div class="form-group">
+                      <label for="exampleInputName1">Nombre des personnes</label>
+                      <input type="number" name="nbrpersonnes" class="form-control" id="exampleInputName1" placeholder="Nombre des personnes">
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail3">Emplacement</label>
+                      <input type="text" name='emplacement' class="form-control" id="exampleInputEmail3" placeholder="Emplacement du table">
+                    </div>
+                    <button type="submit" name="add" class="btn btn-primary mr-2">Ajouter</button>
+                    <button type='reset' class="btn btn-light">Effacer</button>
+                  </form>
                 </div>
               </div>
             </div>  

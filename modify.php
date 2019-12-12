@@ -1,9 +1,24 @@
 <?php
+$id = $_GET['id'];
 session_start();
 require_once '../../Entities/Classes.php';
 $db = new Connexion('root','');
 $db->connect();
-$tables = $db->getTables();
+$table = $db->getTableById($id);
+
+if (isset($_POST['modify'])){
+
+
+    $nbrpersonnes = $_POST['nbrpersonnes'];
+    $emplacement = $_POST['emplacement'];
+    $id =$_POST['id'];
+    
+    
+    $db->modifyTableById($id,$nbrpersonnes,$emplacement);
+    $_SESSION['msg'] = 'Table modifié avec succes';
+    header('location:index.php');
+    
+}
 
 
 ?>
@@ -16,7 +31,7 @@ $tables = $db->getTables();
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Le zink</title>
+  <title>Modifier une table</title>
   <style>
     a.btn{
       color:white !important;
@@ -37,39 +52,24 @@ $tables = $db->getTables();
     <div class="main-panel">
         <div class="content-wrapper">
           <div class="row">
-    <div style='padding-top:10' class="col-lg-12 grid-margin stretch-card">
+          <div class="col-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Liste des  Tables</h4>
+                  <h4 class="card-title">Modifier une table</h4>
                   
-                  <div class="table-responsive">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Nombre des personnes</th>
-                          <th>Etat</th>
-                          <th>Emplacement</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php $i =1; foreach($tables as $table){ ?>
-                          <tr>
-                          <td><?php echo $i; ?></td>
-                          <td><?php echo $table['nb_personnes']; ?> personnes </td>
-                          <td><?php if ($table['etat_tables'] == "disponible" ){echo "<label class='badge badge-primary'>".$table['etat_tables']."</label>";}else{echo "<label class='badge badge-warning'>".$table['etat_tables']."</label>";}  ?></td>
-                          <td><?php echo $table['emplacement_tables']; ?></td>
-                          <td><a href="modify.php?id=<?php echo $table['id_tables'];  ?>" class="btn btn-success">Modifier</a> <a href="delete.php?id=<?php echo $table['id_tables'];  ?>" class="btn btn-danger" onclick='return confirm("voulez-vous vraiment supprimer cette table")'>Supprimer</a></td>
-                        </tr>
-
-
-
-                      <?php $i++;  } ?>
-                        
-                      </tbody>
-                    </table>
-                  </div>
+                  <form class="forms-sample" method='POST' action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                    <div class="form-group">
+                      <label for="exampleInputName1">Nombre des personnes</label>
+                      <input type="number" name="nbrpersonnes" class="form-control" id="exampleInputName1" value='<?php echo $table['nb_personnes']; ?>'>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail3">Emplacement</label>
+                      <input type="text" name='emplacement' class="form-control" id="exampleInputEmail3" value='<?php echo $table['emplacement_tables']; ?>'>
+                    </div>
+                    <input type="hidden" name="id" value='<?php echo $id ?>'>
+                    <button type="submit" name="modify" class="btn btn-primary mr-2">Modifier</button>
+                    <button type='reset' class="btn btn-light">Effacer</button>
+                  </form>
                 </div>
               </div>
             </div>  
