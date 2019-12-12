@@ -6,11 +6,13 @@
 $db = config::getConnexion();
 $liste=$db->query($sql);
 
+
 include "../core/promotionC.php";
 $promotion1C=new promotionC();
 $listepromotions=$promotion1C->afficherpromotions();
 
 ?>
+
 <!doctype html>
 <html class="no-js" lang="zxx">
 
@@ -56,7 +58,7 @@ $listepromotions=$promotion1C->afficherpromotions();
                                     <ul class="mein_menu_list" id="navigation">
                                         <li><a href="about.html">About</a></li>
                                         <li><a href="service.html">Reservation</a></li>
-                                        <li><a href="menu.html">menu</a></li>
+                                        <li><a href="menu.php">menu</a></li>
                                         <li><a href="gallery.html">gallery</a></li>
                                         <div class="logo-img d-none d-lg-block">
                                                 <a href="index.html">
@@ -186,22 +188,58 @@ $listepromotions=$promotion1C->afficherpromotions();
                 </div>
             <div class="row">
             <?PHP
-foreach($listepromotions as $row){
-	?>
-                               <div class="col-xl-4 col-md-6">
+            foreach($listepromotions as $row){
+                $datejour = Date('Y/m/d');
+            $datefin= $row['date_promo'];  
+
+            //explode pour mettre la date du fin en format numerique: 12/05/2006  -> 12052006
+     $dfin = explode("-", $datefin); 
+     
+            //explode pour mettre la date du jour en format numerique: 31/05/2009  -> 31052009
+            $djour = explode("/", $datejour); 
+            
+            
+     
+     // Ensuite il suffit de comparer les deux valeurs
+     
+     //------Abonnement expiré;-------
+     if ($djour>$dfin)
+     { 
+     ?>    
+
+                               <div hidden class="col-xl-4 col-md-6">
                     <div class="single_order">
-                        <div class="order_thumb">
+                        <div class="order_thumb" >
                             <img src="img/order/promotions.jpg" alt="">
                             
                         </div>
                         <div class="order_info">
                             <h3><?PHP echo $row['nom_promo']; ?></h3>
                             <p><?PHP echo $row['desc_promo']; ?> <br></p>
-                            <p><?PHP echo $row['date_promo']; ?> <br></p>                          
+                            <p><?PHP echo $row['date_promo']; ?> <br></p>                              
                         </div>
                     </div>
                 </div>
                 <?PHP
+}
+
+else {
+    ?>
+    <div class="col-xl-4 col-md-6">
+    <div class="single_order">
+        <div class="order_thumb">
+            <img src="img/order/promotions.jpg" type="hidden" alt="">
+            
+        </div>
+        <div class="order_info">
+            <h3><?PHP echo $row['nom_promo']; ?></h3>
+            <p><?PHP echo $row['desc_promo']; ?> <br></p>
+            <p><?PHP echo $row['date_promo']; ?><br></p>                              
+        </div>
+    </div>
+</div> 
+<?PHP  
+}
 }
     ?>      
             </div>
