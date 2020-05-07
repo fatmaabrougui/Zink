@@ -9,7 +9,6 @@ function affichercategorie ($categorie){
 		$db = config::getConnexion();
 		try{
         $req=$db->prepare($sql);
-		
         $nom=$categorie->getNom();
 		
 		$req->bindValue(':nom',$nom);
